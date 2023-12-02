@@ -1,11 +1,20 @@
 import { useState } from 'react';
 import {Bars3Icon, XMarkIcon} from '@heroicons/react/24/solid';
 import Logo from '@/assets/logo.png';
+import Link from './shared/Link';
+import { SelectedPage } from './shared/types';
+import useMediaQuery from './hooks/useMediaQuery';
+import ActionButton from './shared/ActionButton';
 
-type Props = {}
+type Props = {
+  selectedPage: SelectedPage,
+  setSelectedPage: (value: SelectedPage) => void;
+}
 
-export default function NavBar({}: Props) {
+export default function NavBar({selectedPage, setSelectedPage}: Props) {
   const flexBetween = 'flex items-center justify-between';
+  const isAboveMediumScreen = useMediaQuery("(min-width: 1060px)");
+  const [isMenuToggled, setIsMenuToggled] = useState<boolean>(false);
 
   return (
     <nav>
@@ -13,24 +22,28 @@ export default function NavBar({}: Props) {
         <div className={`${flexBetween} mx-auto w-5/6`}>
           <div className={`${flexBetween} w-full gap-16`}>
             {/* Left Side */}
-            <img src={Logo} alt="logo" width={110} />
-
-
+            <img src={Logo} alt="logo" width={130} />
 
             {/* Right Side */}
-            <div className={`${flexBetween} w-full`}>
+            {isAboveMediumScreen ? (
+              <div className={`${flexBetween} w-full`}>
               <div className={`${flexBetween} gap-8 text-sm`}>
-                <p>Home</p>
-                <p>Benefits</p>
-                <p>Our Classes</p>
-                <p>Contact</p>
+               <Link page='Home' selectedPage={selectedPage} setSelectedPage={setSelectedPage}/>
+               <Link page='Benefits' selectedPage={selectedPage} setSelectedPage={setSelectedPage}/>
+               <Link page='Our Classes' selectedPage={selectedPage} setSelectedPage={setSelectedPage}/>
+               <Link page='Contact' selectedPage={selectedPage} setSelectedPage={setSelectedPage}/>
               </div>
 
-              <div className={`${flexBetween} gap-8`}>
+              <div className={`${flexBetween} gap-8 text-sm`}>
                 <p>Sign in</p>
-                <button>Become a Member</button>
+                <ActionButton setSelectedPage={setSelectedPage}>Become a Member</ActionButton>
               </div>
             </div>
+            ): (
+              <button className='rounded-full bg-primary-500 p-2' onClick={() => setIsMenuToggled(!isMenuToggled)}>
+                <Bars3Icon  className='h-6 w-6 text-white'/>
+              </button>
+            )}
           </div>
         </div>
       </div>
